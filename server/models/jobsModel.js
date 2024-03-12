@@ -4,12 +4,12 @@ const jobSchema = new mongoose.Schema(
   {
     company: {
       type: String,
-      required: [true, "Company Name is Require"],
+      requied: [true, "Companay name is require"],
     },
-    Position: {
+    position: {
       type: String,
-      require: [true, "Job Position is Require"],
-      minlength: 100,
+      required: [true, "Job Position is required"],
+      maxlength: 100,
     },
     status: {
       type: String,
@@ -18,13 +18,13 @@ const jobSchema = new mongoose.Schema(
     },
     workType: {
       type: String,
-      enum: ["full-time", "part-time", "Internship", "contaract"],
+      enum: ["full-time", "part-time", "internship", "contaract"],
       default: "full-time",
     },
     workLocation: {
       type: String,
-      default: "Dehradun",
-      required: [true, "Work Location is Require"],
+      default: "Mumbai",
+      required: [true, "Work location is required"],
     },
     createdBy: {
       type: mongoose.Types.ObjectId,
@@ -34,4 +34,4 @@ const jobSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.model("job", jobSchema);
+export default mongoose.model("Job", jobSchema);

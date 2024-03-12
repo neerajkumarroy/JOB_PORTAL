@@ -42,5 +42,5 @@ app.use("/api/v1/job", jobRouts);
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {
-  console.log(`App is running on the port number ${PORT}`.bgBlue.white);
+  console.log(`App is running on the port number ${PORT}`.bgYellow.white);
 });
