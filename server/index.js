@@ -5,6 +5,10 @@ import color from "colors";
 import cors from "cors";
 import morgan from "morgan";
 import "express-async-errors";
+//security packges
+import helmet from "helmet"; // Sequire header data
+import xss from "xss-clean"; //protect the application for the Cross-site scripting
+import mongoSanitize from "express-mongo-sanitize";
 
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -28,6 +32,9 @@ app.use(cors());
 connectDB();
 
 //Middleware
+app.use(helmet());
+app.use(xss());
+app.use(mongoSanitize());
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
