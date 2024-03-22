@@ -27,11 +27,11 @@
     padding: 10px 10px;
     border: none;
     background-color:rgb(95, 95, 218);
-    color: white;
+    color: rgb(255, 255, 255);
     cursor: pointer;
     height: 45px;
 }
 .btn:hover{
-    background-color: white;
+    background-color: rgb(18, 236, 109);
     color: black;
 }

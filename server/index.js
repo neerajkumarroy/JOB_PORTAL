@@ -10,7 +10,7 @@ import helmet from "helmet"; // Sequire header data
 import xss from "xss-clean"; //protect the application for the Cross-site scripting
 import mongoSanitize from "express-mongo-sanitize";
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 7070;
 const app = express();
 
 //Dot Env config
