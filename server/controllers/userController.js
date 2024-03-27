@@ -1,51 +1,46 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { showLoading, hideLoading } from "../../redux/features/alertSlice";
-import axios from "axios";
-import { setUser } from "../../redux/features/auth/authSlice";
+import userModel from "../models/userModel.js";
 
-import { Navigate } from "react-router-dom";
-
-const PrivateRoute = ({ children }) => {
-  const { user } = useSelector((state) => state.auth);
-
-  const dispatch = useDispatch();
-  const getUser = async () => {
-    try {
-      dispatch(showLoading());
-      const { data } = await axios.post(
-        "/api/v1/user/getUser",
-        { token: localStorage.getItem("token") },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      dispatch(hideLoading());
-      if (data.success) {
-        dispatch(setUser(data.data));
-      } else {
-        localStorage.clear();
-        <Navigate to="/login" />;
-      }
-    } catch (error) {
-      localStorage.clear();
-      dispatch(hideLoading());
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    if (!user) {
-      getUser();
-    }
-  });
-
-  if (localStorage.getItem("token")) {
-    return children;
-  } else {
-    return <Navigate to="/login" />;
+export const updateUserController = async (req, res, next) => {
+  const { name, email, lastName, location } = req.body;
+  if (!name || !email || !lastName || !location) {
+    next("Please Provide All Fields");
   }
+  const user = await userModel.findOne({ _id: req.user.userId });
+  user.name = name;
+  user.lastName = lastName;
+  user.email = email;
+  user.location = location;
+
+  await user.save();
+  const token = user.createJWT();
+  res.status(200).json({
+    user,
+    token,
+  });
 };
 
-export default PrivateRoute;
+// get user data
+export const getUserController = async (req, res, next) => {
+  try {
+    const user = await userModel.findById({ _id: req.body.user.userId });
+    user.password = undefined;
+    if (!user) {
+      return res.status(200).send({
+        message: "User Not Found",
+        success: false,
+      });
+    } else {
+      res.status(200).send({
+        success: true,
+        data: user,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "auth error",
+      success: false,
+      error: error.message,
+    });
+  }
+};

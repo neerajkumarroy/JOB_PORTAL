@@ -1,10 +1,11 @@
 import React from "react";
+import Layout from "../components/Layout/Layout";
 
 const DashBoard = () => {
   return (
-    <div>
+    <Layout>
       <h1>This is DashBoard Page</h1>
-    </div>
+    </Layout>
   );
 };
 

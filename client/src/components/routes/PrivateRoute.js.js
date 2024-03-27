@@ -35,7 +35,7 @@ const PrivateRoute = ({ children }) => {
     }
   };
   useEffect(() => {
-    if (user) {
+    if (!user) {
       getUser();
     }
   });
