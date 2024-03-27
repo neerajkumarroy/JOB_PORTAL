@@ -30,6 +30,8 @@ const Login = () => {
         localStorage.setItem("token", data.token);
         toast.success("'Login SuccessFull...!");
         navigate("/dashboard");
+      } else {
+        toast.success("Ivalide Credintial Try Again");
       }
     } catch (error) {
       dispatch(hideLoading());
@@ -44,7 +46,7 @@ const Login = () => {
         <Spinner />
       ) : (
         <div className="form-container">
-          <form className="card p-3" onSubmit={handleSubmit}>
+          <form className="card p-2" onSubmit={handleSubmit}>
             <img
               src="/assets/images/logo/logo.png"
               alt="logo"
@@ -54,7 +56,7 @@ const Login = () => {
             <InputForm
               htmlFrom="email"
               lableText={"Email"}
-              type={"text"}
+              type={"email"}
               value={email}
               handleChange={(e) => setEmail(e.target.value)}
               name="email"
@@ -70,9 +72,11 @@ const Login = () => {
 
             <div className="d-flex justify-content-between">
               <p>
-                Not a User <Link to="/register">Register</Link>{" "}
+                Not a user <Link to="/register">Register Here!</Link>{" "}
               </p>
-              <button className="btn btn-primary">Login</button>
+              <button type="submit" className="btn btn-primary">
+                Login
+              </button>
             </div>
           </form>
         </div>

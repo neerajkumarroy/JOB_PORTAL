@@ -14,10 +14,10 @@ const PrivateRoute = ({ children }) => {
       dispatch(showLoading());
       const { data } = await axios.post(
         "/api/v1/user/getUser",
-        { token: localStorage.getItem("Token") },
+        { token: localStorage.getItem("token") },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("Token")}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
@@ -39,7 +39,7 @@ const PrivateRoute = ({ children }) => {
       getUser();
     }
   });
-  if (localStorage.getItem("Token")) {
+  if (localStorage.getItem("token")) {
     return children;
   } else {
     return <Navigate to="/login" />;

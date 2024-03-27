@@ -1,44 +1,51 @@
-import userModel from "../models/userModel.js";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { showLoading, hideLoading } from "../../redux/features/alertSlice";
+import axios from "axios";
+import { setUser } from "../../redux/features/auth/authSlice";
 
-export const updateUserController = async (req, resp, next) => {
-  const { name, email, lastName, location } = req.body;
-  if (!name || !email || !lastName || !location) {
-    return resp.status(400).json({ message: "Please provide all fields" });
-  }
-  try {
-    const user = await userModel.findOneAndUpdate(
-      { _id: req.user.userId },
-      { name, lastName, email, location },
-      { new: true }
-    );
+import { Navigate } from "react-router-dom";
 
-    if (!user) {
-      return resp.status(200).send({ message: "User not found" });
+const PrivateRoute = ({ children }) => {
+  const { user } = useSelector((state) => state.auth);
+
+  const dispatch = useDispatch();
+  const getUser = async () => {
+    try {
+      dispatch(showLoading());
+      const { data } = await axios.post(
+        "/api/v1/user/getUser",
+        { token: localStorage.getItem("token") },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      dispatch(hideLoading());
+      if (data.success) {
+        dispatch(setUser(data.data));
+      } else {
+        localStorage.clear();
+        <Navigate to="/login" />;
+      }
+    } catch (error) {
+      localStorage.clear();
+      dispatch(hideLoading());
+      console.log(error);
     }
+  };
+  useEffect(() => {
+    if (!user) {
+      getUser();
+    }
+  });
 
-    const token = user.createJWT();
-    resp.status(200).json({ user, token });
-  } catch (error) {
-    console.log(error);
-    resp.status(500).json({ message: "Internal server error" });
+  if (localStorage.getItem("token")) {
+    return children;
+  } else {
+    return <Navigate to="/login" />;
   }
 };
 
-export const getUserController = async (req, resp) => {
-  try {
-    const user = await userModel.findById({ _id: req.user.userId });
-    user.password = undefined;
-    if (!user) {
-      return resp
-        .status(200)
-        .send({ message: "User not found", success: false });
-    }
-  } catch (error) {
-    console.log(error);
-    resp.status(500).send({
-      message: "auth Error",
-      success: false,
-      error: error.message,
-    });
-  }
-};
+export default PrivateRoute;
